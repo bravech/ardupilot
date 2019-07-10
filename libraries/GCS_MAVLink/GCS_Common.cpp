@@ -903,7 +903,7 @@ void GCS_MAVLINK::send_textv(MAV_SEVERITY severity, const char *fmt, va_list arg
 {
     char text[MAVLINK_MSG_STATUSTEXT_FIELD_TEXT_LEN+1];
     hal.util->vsnprintf(text, sizeof(text), fmt, arg_list);
-    gcs().send_statustext(severity, (1<<chan), text);
+    //gcs().send_statustext(severity, (1<<chan), text);
 }
 void GCS_MAVLINK::send_text(MAV_SEVERITY severity, const char *fmt, ...) const
 {
@@ -4420,17 +4420,17 @@ bool GCS_MAVLINK::try_send_message(const enum ap_message id)
 
     case MSG_ATTITUDE:
         CHECK_PAYLOAD_SIZE(ATTITUDE);
-        send_attitude();
+        // send_attitude();
         break;
 
     case MSG_NEXT_PARAM:
         CHECK_PAYLOAD_SIZE(PARAM_VALUE);
-        queued_param_send();
+        // queued_param_send();
         break;
 
     case MSG_GIMBAL_REPORT:
         CHECK_PAYLOAD_SIZE(GIMBAL_REPORT);
-        send_gimbal_report();
+        // send_gimbal_report();
         break;
 
     case MSG_HEARTBEAT:
@@ -4441,7 +4441,7 @@ bool GCS_MAVLINK::try_send_message(const enum ap_message id)
 
     case MSG_HWSTATUS:
         CHECK_PAYLOAD_SIZE(HWSTATUS);
-        send_hwstatus();
+        // send_hwstatus();
         break;
 
     case MSG_LOCATION:
@@ -4451,161 +4451,161 @@ bool GCS_MAVLINK::try_send_message(const enum ap_message id)
 
     case MSG_HOME:
         CHECK_PAYLOAD_SIZE(HOME_POSITION);
-        send_home_position();
+        // send_home_position();
         break;
 
     case MSG_ORIGIN:
         CHECK_PAYLOAD_SIZE(GPS_GLOBAL_ORIGIN);
-        send_gps_global_origin();
+        // send_gps_global_origin();
         break;
 
     case MSG_RPM:
         CHECK_PAYLOAD_SIZE(RPM);
-        send_rpm();
+        // send_rpm();
         break;
 
     case MSG_CURRENT_WAYPOINT:
     case MSG_MISSION_ITEM_REACHED:
     case MSG_NEXT_MISSION_REQUEST_WAYPOINTS:
     case MSG_NEXT_MISSION_REQUEST_RALLY:
-        ret = try_send_mission_message(id);
+        // ret = try_send_mission_message(id);
         break;
 
     case MSG_MAG_CAL_PROGRESS:
     case MSG_MAG_CAL_REPORT:
-        ret = try_send_compass_message(id);
+        // ret = try_send_compass_message(id);
         break;
 
     case MSG_BATTERY_STATUS:
-        send_battery_status();
+        // send_battery_status();
         break;
 
     case MSG_BATTERY2:
         CHECK_PAYLOAD_SIZE(BATTERY2);
-        send_battery2();
+        // send_battery2();
         break;
 
     case MSG_EKF_STATUS_REPORT:
-#if AP_AHRS_NAVEKF_AVAILABLE
-        CHECK_PAYLOAD_SIZE(EKF_STATUS_REPORT);
-        AP::ahrs_navekf().send_ekf_status_report(chan);
-#endif
+// #if AP_AHRS_NAVEKF_AVAILABLE
+//         CHECK_PAYLOAD_SIZE(EKF_STATUS_REPORT);
+//         AP::ahrs_navekf().send_ekf_status_report(chan);
+// #endif
         break;
 
     case MSG_MEMINFO:
         CHECK_PAYLOAD_SIZE(MEMINFO);
-        send_meminfo();
+        // send_meminfo();
         break;
 
     case MSG_FENCE_STATUS:
         CHECK_PAYLOAD_SIZE(FENCE_STATUS);
-        send_fence_status();
+        // send_fence_status();
         break;
 
     case MSG_RANGEFINDER:
         CHECK_PAYLOAD_SIZE(RANGEFINDER);
-        send_rangefinder();
+        // send_rangefinder();
         break;
 
     case MSG_DISTANCE_SENSOR:
-        send_distance_sensor();
+        // send_distance_sensor();
         break;
 
     case MSG_CAMERA_FEEDBACK:
-        {
-            AP_Camera *camera = AP::camera();
-            if (camera == nullptr) {
-                break;
-            }
-            CHECK_PAYLOAD_SIZE(CAMERA_FEEDBACK);
-            camera->send_feedback(chan);
-        }
+        // {
+        //     AP_Camera *camera = AP::camera();
+        //     if (camera == nullptr) {
+        //         break;
+        //     }
+        //     CHECK_PAYLOAD_SIZE(CAMERA_FEEDBACK);
+        //     camera->send_feedback(chan);
+        // }
         break;
 
     case MSG_SYSTEM_TIME:
         CHECK_PAYLOAD_SIZE(SYSTEM_TIME);
-        send_system_time();
+        // send_system_time();
         break;
     case MSG_GPS_RAW:
         CHECK_PAYLOAD_SIZE(GPS_RAW_INT);
-        AP::gps().send_mavlink_gps_raw(chan);
+        // AP::gps().send_mavlink_gps_raw(chan);
         break;
     case MSG_GPS_RTK:
         CHECK_PAYLOAD_SIZE(GPS_RTK);
-        AP::gps().send_mavlink_gps_rtk(chan, 0);
+        // AP::gps().send_mavlink_gps_rtk(chan, 0);
         break;
     case MSG_GPS2_RAW:
         CHECK_PAYLOAD_SIZE(GPS2_RAW);
-        AP::gps().send_mavlink_gps2_raw(chan);
+        // AP::gps().send_mavlink_gps2_raw(chan);
         break;
     case MSG_GPS2_RTK:
         CHECK_PAYLOAD_SIZE(GPS2_RTK);
-        AP::gps().send_mavlink_gps_rtk(chan, 1);
+        // AP::gps().send_mavlink_gps_rtk(chan, 1);
         break;
 
     case MSG_LOCAL_POSITION:
         CHECK_PAYLOAD_SIZE(LOCAL_POSITION_NED);
-        send_local_position();
+        // send_local_position();
         break;
 
     case MSG_MOUNT_STATUS:
         CHECK_PAYLOAD_SIZE(MOUNT_STATUS);
-        send_mount_status();
+        // send_mount_status();
         break;
 
     case MSG_OPTICAL_FLOW:
         CHECK_PAYLOAD_SIZE(OPTICAL_FLOW);
-        send_opticalflow();
+        // send_opticalflow();
         break;
 
     case MSG_POSITION_TARGET_GLOBAL_INT:
         CHECK_PAYLOAD_SIZE(POSITION_TARGET_GLOBAL_INT);
-        send_position_target_global_int();
+        // send_position_target_global_int();
         break;
 
     case MSG_POSITION_TARGET_LOCAL_NED:
         CHECK_PAYLOAD_SIZE(POSITION_TARGET_LOCAL_NED);
-        send_position_target_local_ned();
+        // send_position_target_local_ned();
         break;
 
     case MSG_POWER_STATUS:
         CHECK_PAYLOAD_SIZE(POWER_STATUS);
-        send_power_status();
+        // send_power_status();
         break;
 
     case MSG_RC_CHANNELS:
         CHECK_PAYLOAD_SIZE(RC_CHANNELS);
-        send_rc_channels();
+        // send_rc_channels();
         break;
 
     case MSG_RC_CHANNELS_RAW:
         CHECK_PAYLOAD_SIZE(RC_CHANNELS_RAW);
-        send_rc_channels_raw();
+        // send_rc_channels_raw();
         break;
 
     case MSG_RAW_IMU:
         CHECK_PAYLOAD_SIZE(RAW_IMU);
-        send_raw_imu();
+        // send_raw_imu();
         break;
 
     case MSG_SCALED_IMU:
         CHECK_PAYLOAD_SIZE(SCALED_IMU);
-        send_scaled_imu(0, mavlink_msg_scaled_imu_send);
+        // send_scaled_imu(0, mavlink_msg_scaled_imu_send);
         break;
 
     case MSG_SCALED_IMU2:
         CHECK_PAYLOAD_SIZE(SCALED_IMU2);
-        send_scaled_imu(1, mavlink_msg_scaled_imu2_send);
+        // send_scaled_imu(1, mavlink_msg_scaled_imu2_send);
         break;
 
     case MSG_SCALED_IMU3:
         CHECK_PAYLOAD_SIZE(SCALED_IMU3);
-        send_scaled_imu(2, mavlink_msg_scaled_imu3_send);
+        // send_scaled_imu(2, mavlink_msg_scaled_imu3_send);
         break;
 
     case MSG_SCALED_PRESSURE:
         CHECK_PAYLOAD_SIZE(SCALED_PRESSURE);
-        send_scaled_pressure();
+        // send_scaled_pressure();
         break;
 
     case MSG_SCALED_PRESSURE2:
@@ -4615,22 +4615,22 @@ bool GCS_MAVLINK::try_send_message(const enum ap_message id)
 
     case MSG_SCALED_PRESSURE3:
         CHECK_PAYLOAD_SIZE(SCALED_PRESSURE3);
-        send_scaled_pressure3();
+        // send_scaled_pressure3();
         break;
 
     case MSG_SENSOR_OFFSETS:
         CHECK_PAYLOAD_SIZE(SENSOR_OFFSETS);
-        send_sensor_offsets();
+        // send_sensor_offsets();
         break;
 
     case MSG_SERVO_OUTPUT_RAW:
         CHECK_PAYLOAD_SIZE(SERVO_OUTPUT_RAW);
-        send_servo_output_raw();
+        // send_servo_output_raw();
         break;
 
     case MSG_SIMSTATE:
         CHECK_PAYLOAD_SIZE(SIMSTATE);
-        send_simstate();
+        // send_simstate();
         break;
 
     case MSG_SYS_STATUS:
@@ -4640,81 +4640,82 @@ bool GCS_MAVLINK::try_send_message(const enum ap_message id)
 
     case MSG_AHRS2:
         CHECK_PAYLOAD_SIZE(AHRS2);
-        send_ahrs2();
+        // send_ahrs2();
         break;
 
     case MSG_AHRS3:
         CHECK_PAYLOAD_SIZE(AHRS3);
-        send_ahrs3();
+        // send_ahrs3();
         break;
 
     case MSG_PID_TUNING:
         CHECK_PAYLOAD_SIZE(PID_TUNING);
-        send_pid_tuning();
+        // send_pid_tuning();
         break;
 
     case MSG_NAV_CONTROLLER_OUTPUT:
         CHECK_PAYLOAD_SIZE(NAV_CONTROLLER_OUTPUT);
-        send_nav_controller_output();
+        // send_nav_controller_output();
         break;
 
     case MSG_AHRS:
         CHECK_PAYLOAD_SIZE(AHRS);
-        send_ahrs();
+        // send_ahrs();
         break;
 
     case MSG_EXTENDED_SYS_STATE:
         CHECK_PAYLOAD_SIZE(EXTENDED_SYS_STATE);
-        send_extended_sys_state();
+        // send_extended_sys_state();
         break;
 
     case MSG_VFR_HUD:
         CHECK_PAYLOAD_SIZE(VFR_HUD);
-        send_vfr_hud();
+        // send_vfr_hud();
         break;
 
     case MSG_VIBRATION:
         CHECK_PAYLOAD_SIZE(VIBRATION);
-        send_vibration();
+        // send_vibration();
         break;
 
     case MSG_ESC_TELEMETRY: {
-#ifdef HAVE_AP_BLHELI_SUPPORT
-        CHECK_PAYLOAD_SIZE(ESC_TELEMETRY_1_TO_4);
-        AP_BLHeli *blheli = AP_BLHeli::get_singleton();
-        if (blheli) {
-            blheli->send_esc_telemetry_mavlink(uint8_t(chan));
-        }
-#endif
-#if HAL_WITH_UAVCAN
-        uint8_t num_drivers = AP::can().get_num_drivers();
+        break;
+// #ifdef HAVE_AP_BLHELI_SUPPORT
+//         CHECK_PAYLOAD_SIZE(ESC_TELEMETRY_1_TO_4);
+//         AP_BLHeli *blheli = AP_BLHeli::get_singleton();
+//         if (blheli) {
+//             blheli->send_esc_telemetry_mavlink(uint8_t(chan));
+//         }
+// #endif
+// #if HAL_WITH_UAVCAN
+//         uint8_t num_drivers = AP::can().get_num_drivers();
 
-        for (uint8_t i = 0; i < num_drivers; i++) {
-            switch (AP::can().get_protocol_type(i)) {
-                case AP_BoardConfig_CAN::Protocol_Type_KDECAN: {
-// To be replaced with macro saying if KDECAN library is included
-#if APM_BUILD_TYPE(APM_BUILD_ArduCopter) || APM_BUILD_TYPE(APM_BUILD_ArduPlane) || APM_BUILD_TYPE(APM_BUILD_ArduSub)
-                    AP_KDECAN *ap_kdecan = AP_KDECAN::get_kdecan(i);
-                    if (ap_kdecan != nullptr) {
-                        ap_kdecan->send_mavlink(uint8_t(chan));
-                    }
-#endif
-                    break;
-                }
-                case AP_BoardConfig_CAN::Protocol_Type_ToshibaCAN: {
-                    AP_ToshibaCAN *ap_tcan = AP_ToshibaCAN::get_tcan(i);
-                    if (ap_tcan != nullptr) {
-                        ap_tcan->send_esc_telemetry_mavlink(uint8_t(chan));
-                    }
-                    break;
-                }
-                case AP_BoardConfig_CAN::Protocol_Type_UAVCAN:
-                case AP_BoardConfig_CAN::Protocol_Type_None:
-                default:
-                    break;
-            }
-        }
-#endif
+//         for (uint8_t i = 0; i < num_drivers; i++) {
+//             switch (AP::can().get_protocol_type(i)) {
+//                 case AP_BoardConfig_CAN::Protocol_Type_KDECAN: {
+// // To be replaced with macro saying if KDECAN library is included
+// #if APM_BUILD_TYPE(APM_BUILD_ArduCopter) || APM_BUILD_TYPE(APM_BUILD_ArduPlane) || APM_BUILD_TYPE(APM_BUILD_ArduSub)
+//                     AP_KDECAN *ap_kdecan = AP_KDECAN::get_kdecan(i);
+//                     if (ap_kdecan != nullptr) {
+//                         ap_kdecan->send_mavlink(uint8_t(chan));
+//                     }
+// #endif
+//                     break;
+//                 }
+//                 case AP_BoardConfig_CAN::Protocol_Type_ToshibaCAN: {
+//                     AP_ToshibaCAN *ap_tcan = AP_ToshibaCAN::get_tcan(i);
+//                     if (ap_tcan != nullptr) {
+//                         ap_tcan->send_esc_telemetry_mavlink(uint8_t(chan));
+//                     }
+//                     break;
+//                 }
+//                 case AP_BoardConfig_CAN::Protocol_Type_UAVCAN:
+//                 case AP_BoardConfig_CAN::Protocol_Type_None:
+//                 default:
+//                     break;
+//             }
+//         }
+// #endif
         break;
     }
 
