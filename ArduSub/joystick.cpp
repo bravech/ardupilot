@@ -122,6 +122,76 @@ void Sub::transform_manual_control_to_rc_override(int16_t x, int16_t y, int16_t 
     z_last = z;
 }
 
+
+
+void Sub::add_command_to_program(int16_t x, int16_t y, int16_t z, int16_t r, int16_t buttons, int16_t duration)
+{
+    if (current_command_index < PROGRAM_MAX_LENGTH)
+    {
+        *(command_list[current_command_index]) = {x, y, z, r, buttons, duration};
+        current_command_index++;
+        command_list_length++;
+    }
+    else
+    {
+        gcs().send_text(MAV_SEVERITY_INFO,"Maximum program length reached! [default 1024]");
+    }
+}
+
+void Sub::process_current_command()
+{
+    uint32_t tnow = AP_HAL::millis();
+    if (executing_program && ((tnow - time_last_command) * 1000 >= command_list[current_command_index] -> duration))
+    {
+        if(current_command_index < command_list_length)
+        {
+            transform_manual_control_to_rc_override(
+                command_list[current_command_index] -> x, 
+                command_list[current_command_index] -> y, 
+                command_list[current_command_index] -> z, 
+                command_list[current_command_index] -> r,
+                command_list[current_command_index] -> buttons);
+            current_command_index++;
+            sub.failsafe.last_pilot_input_ms = AP_HAL::millis();
+            // a RC override message is considered to be a 'heartbeat' from the ground station for failsafe purposes
+            sub.failsafe.last_heartbeat_ms = AP_HAL::millis();
+        }
+        else
+        {
+            gcs().send_text(MAV_SEVERITY_INFO, "End of program reached!");
+            set_neutral_controls();
+            arming.disarm();
+        }
+    }
+}
+
+void Sub::stop_program_execution()
+{
+    executing_program = false;
+    gcs().send_text(MAV_SEVERITY_INFO, "Program execution stopped!");
+    set_neutral_controls();
+    arming.disarm();
+}
+
+void Sub::start_program_execution()
+{
+    gcs().send_text(MAV_SEVERITY_INFO, "Program execution started!");
+    arming.arm(AP_Arming::Method::MAVLINK);
+    time_last_command = 0;
+}
+
+
+//TODO: check if setting the execution time to 0 seconds causes it to loop infinitely or not execute
+//Either way, we are setting executing_program to false
+void Sub::clear_program()
+{
+    executing_program = false;
+    for (uint16_t i = 0; i < PROGRAM_MAX_LENGTH; i++)
+    {
+        *(command_list[i]) = {};
+    }
+}
+
 void Sub::handle_jsbutton_press(uint8_t button, bool shift, bool held)
 {
     // Act based on the function assigned to this button

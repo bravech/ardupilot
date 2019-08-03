@@ -4418,47 +4418,37 @@ bool GCS_MAVLINK::try_send_message(const enum ap_message id)
 
     switch(id) {
 
-<<<<<<< HEAD
     case MSG_ATTITUDE:
         CHECK_PAYLOAD_SIZE(ATTITUDE);
         // send_attitude();
         break;
 
-=======
->>>>>>> 4f070576a777a642bcb2219de97483bf6ea5e802
     case MSG_NEXT_PARAM:
         CHECK_PAYLOAD_SIZE(PARAM_VALUE);
         // queued_param_send();
         break;
 
-<<<<<<< HEAD
     case MSG_GIMBAL_REPORT:
         CHECK_PAYLOAD_SIZE(GIMBAL_REPORT);
         // send_gimbal_report();
         break;
 
-=======
->>>>>>> 4f070576a777a642bcb2219de97483bf6ea5e802
     case MSG_HEARTBEAT:
         CHECK_PAYLOAD_SIZE(HEARTBEAT);
         last_heartbeat_time = AP_HAL::millis();
         send_heartbeat();
         break;
 
-<<<<<<< HEAD
     case MSG_HWSTATUS:
         CHECK_PAYLOAD_SIZE(HWSTATUS);
         // send_hwstatus();
         break;
 
-=======
->>>>>>> 4f070576a777a642bcb2219de97483bf6ea5e802
     case MSG_LOCATION:
         CHECK_PAYLOAD_SIZE(GLOBAL_POSITION_INT);
         send_global_position_int();
         break;
 
-<<<<<<< HEAD
     case MSG_HOME:
         CHECK_PAYLOAD_SIZE(HOME_POSITION);
         // send_home_position();
@@ -4613,14 +4603,11 @@ bool GCS_MAVLINK::try_send_message(const enum ap_message id)
         // send_scaled_imu(2, mavlink_msg_scaled_imu3_send);
         break;
 
-=======
->>>>>>> 4f070576a777a642bcb2219de97483bf6ea5e802
     case MSG_SCALED_PRESSURE:
         CHECK_PAYLOAD_SIZE(SCALED_PRESSURE);
         // send_scaled_pressure();
         break;
 
-<<<<<<< HEAD
     case MSG_SCALED_PRESSURE2:
         CHECK_PAYLOAD_SIZE(SCALED_PRESSURE2);
         send_scaled_pressure2();
@@ -4646,14 +4633,11 @@ bool GCS_MAVLINK::try_send_message(const enum ap_message id)
         // send_simstate();
         break;
 
-=======
->>>>>>> 4f070576a777a642bcb2219de97483bf6ea5e802
     case MSG_SYS_STATUS:
         CHECK_PAYLOAD_SIZE(SYS_STATUS);
         send_sys_status();
         break;
 
-<<<<<<< HEAD
     case MSG_AHRS2:
         CHECK_PAYLOAD_SIZE(AHRS2);
         // send_ahrs2();
@@ -4735,18 +4719,16 @@ bool GCS_MAVLINK::try_send_message(const enum ap_message id)
         break;
     }
 
-=======
->>>>>>> 4f070576a777a642bcb2219de97483bf6ea5e802
     default:
         // try_send_message must always at some stage return true for
         // a message, or we will attempt to infinitely retry the
         // message as part of send_message.
         // This message will be sent out at the same rate as the
         // unknown message, so should be safe.
-        // DIFFERENT:
-        // We will not send any message that is not included in the 
-        // switch statement above and will return true. 
-        ret = true; 
+        gcs().send_text(MAV_SEVERITY_DEBUG, "Sending unknown message (%u)", id);
+#if CONFIG_HAL_BOARD == HAL_BOARD_SITL
+        AP_HAL::panic("Sending unknown ap_message %u", id);
+#endif
         break;
     }
 
@@ -5024,3 +5006,4 @@ GCS &gcs()
 {
     return *GCS::get_singleton();
 }
+

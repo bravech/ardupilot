@@ -539,6 +539,37 @@ void GCS_MAVLINK_Sub::handleMessage(mavlink_message_t* msg)
         break;
     }
 
+    case MAVLINK_MSG_ID_MANUAL_CONTROL_DURATION: {     // MAV ID: 1690
+        if (msg->sysid != sub.g.sysid_my_gcs) {
+            break;    // Only accept control from our gcs
+        }
+        mavlink_manual_control_duration_t packet;
+        mavlink_msg_manual_control_duration_decode(msg, &packet);
+
+        if (packet.target != sub.g.sysid_this_mav) {
+            break; // only accept control aimed at us
+        }
+
+        sub.add_command_to_program(packet.x,packet.y,packet.z,packet.r,packet.buttons, packet.duration);
+
+        sub.failsafe.last_pilot_input_ms = AP_HAL::millis();
+        // a RC override message is considered to be a 'heartbeat' from the ground station for failsafe purposes
+        sub.failsafe.last_heartbeat_ms = AP_HAL::millis();
+        break;
+    }
+
+    case MAVLINK_MSG_ID_STOP_MANUAL_PROGRAM: { //MAV ID: 1691
+        sub.stop_program_execution();
+        break;
+    }
+
+    case MAVLINK_MSG_ID_START_MANUAL_PROGRAM: {
+        sub.start_program_execution();
+        break;
+    }
+
+
+
     
     case MAVLINK_MSG_ID_SET_ATTITUDE_TARGET: { // MAV ID: 82
         // decode packet

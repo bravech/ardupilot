@@ -178,6 +178,23 @@ private:
     Compass compass;
     AP_InertialSensor ins;
 
+    //Struct to store commands in linear program format
+    struct command {
+        int16_t x;
+        int16_t y;
+        int16_t z;
+        int16_t r;
+        int16_t buttons;
+        int16_t duration;
+    };
+
+    uint16_t current_command_index;
+    uint16_t command_list_length;
+    bool executing_program;
+    uint32_t time_last_command;
+
+    command* command_list[1024];
+
     RangeFinder rangefinder{serial_manager};
     struct {
         bool enabled:1;
@@ -604,6 +621,12 @@ private:
     void init_rangefinder(void);
     void read_rangefinder(void);
     bool rangefinder_alt_ok(void);
+    void add_command_to_program(int16_t x, int16_t y, int16_t z, int16_t r, int16_t buttons, int16_t duration);
+    void process_current_command();
+    void start_program_execution();
+    void stop_program_execution();
+    void clear_program();
+    void initialize_command_program();
 #if OPTFLOW == ENABLED
     void init_optflow();
 #endif

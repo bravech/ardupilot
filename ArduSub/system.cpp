@@ -293,3 +293,17 @@ bool Sub::should_log(uint32_t mask)
     return false;
 #endif
 }
+
+//Initializes all command structs to 0 values, duration is 0 so it should execute anything
+void Sub::initialize_command_program()
+{
+    current_command_index = 0;
+    command_list_length = 0;
+    executing_program = false;
+    time_last_command = 0;
+    for (int16_t i = 0; i < PROGRAM_MAX_LENGTH; i++)
+    {
+        command_list[i] = new command;
+        command_list[i] = {};
+    }
+}

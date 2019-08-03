@@ -215,3 +215,5 @@ enum LoggingParameters {
 #define MAVLINK_SET_POS_TYPE_MASK_YAW_IGNORE      (1<<10)
 #define MAVLINK_SET_POS_TYPE_MASK_YAW_RATE_IGNORE (1<<11)
 
+//For manual control program, max program length
+#define PROGRAM_MAX_LENGTH 1024
