@@ -4725,10 +4725,9 @@ bool GCS_MAVLINK::try_send_message(const enum ap_message id)
         // message as part of send_message.
         // This message will be sent out at the same rate as the
         // unknown message, so should be safe.
-        gcs().send_text(MAV_SEVERITY_DEBUG, "Sending unknown message (%u)", id);
-#if CONFIG_HAL_BOARD == HAL_BOARD_SITL
-        AP_HAL::panic("Sending unknown ap_message %u", id);
-#endif
+        // We will not send any message that is not included in the 
+        // switch statement above and will return true. 
+        ret = true; 
         break;
     }
 
